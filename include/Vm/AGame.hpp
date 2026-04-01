@@ -18,8 +18,7 @@ class AGame : public IGame
         void reset() override = 0;
         bool get_end() override = 0;
         int get_score() override = 0;
-
-        int score;
+        
 
 
 };

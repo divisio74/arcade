@@ -17,6 +17,12 @@ int main(int argc, char *argv[]) {
     int is_working = 0;
     Vm vm;
 
+    void *MenueLib;
+    typedef Menue* (*menufunc)(std::vector<std::string>, std::vector<std::string>);
+    MenueLib = dlopen("./Menue.so", RTLD_LAZY);
+    menufunc mfunc = (menufunc)dlsym(MenueLib, "CreateGame");
+
+
     if (argc == 0 || argc > 1)
         return 0;
 

@@ -12,7 +12,6 @@ namespace arc {
     struct Compo {
         int x;
         int y;
-        char symbol;
         std::string sprite;
         Color color;
     };
