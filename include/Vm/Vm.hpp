@@ -8,12 +8,9 @@
 class Vm
 {
     public:
-        Vm();
-        Vm(/* args */);
-        Vm(const Vm& other);
-        Vm& operator=(const Vm& other);
         ~Vm() = default;
-    
+        int handle_lib();
+
     private :
         std::vector<std::string> _games;
         std::vector<std::string> _displays;
