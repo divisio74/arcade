@@ -2,11 +2,9 @@
 #include "IDisplay.hpp"
 #include "IGame.hpp"
 #include "include/Vm/Vm.hpp"
+#include "include/games/Menue.hpp"
 #include <filesystem>
 #include <dirent.h>
-
-
-//le menue du programme est vue comme un IGAME
 
 
 int main(int argc, char *argv[]) {

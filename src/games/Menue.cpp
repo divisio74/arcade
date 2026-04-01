@@ -55,7 +55,6 @@ void Menue::update(arc::TouchSignal signal)
 std::vector<arc::Compo> Menue::get_element()
 {
     std::vector<arc::Compo> total;
-    std::vector<arc::Compo> games;
     std::size_t lib_len = _displays.size();
     std::size_t game_len = _games.size();
 
@@ -104,6 +103,36 @@ std::vector<arc::Compo> Menue::get_element()
     return total;
 }
 
-extern "C" Menue *CreateGame() {
-    return new Menue(std::vector<std::string> games, std::vector<std::string> displays);
+void Menue::reset()
+{
+
 }
+
+bool Menue::get_end()
+{
+    return _end;
+}
+
+int Menue::get_score()
+{
+    return 0;
+}
+
+std::string Menue::get_lib()
+{
+    if (_selectedDisplay == -1)
+        return "";
+    return _displays[_selectedDisplay];
+}
+
+std::string Menue::get_game()
+{
+    if (_selectedGame == -1)
+        return "";
+    return _games[_selectedGame];
+}
+
+extern "C" Menue *CreateGame(std::vector<std::string> games, std::vector<std::string> displays) {
+    return new Menue(games, displays);
+}
+
