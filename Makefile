@@ -1,35 +1,39 @@
-NAME	=	arcade
+NAME        = arcade
 
-CXX	=	g++
-CXXFLAGS	=	-std=c++20 -Wall -Wextra
-CXXFLAGSLIB =   -shared -fPIC
+CXX         = g++
+CXXFLAGS    = -std=c++20 -Wall -Wextra -fno-gnu-unique
+CXXFLAGSLIB = -shared -fPIC -fno-gnu-unique -std=c++20 -Wall -Wextra
 
-SRC	=	main.cpp \
+SRC         = main.cpp \
+              src/Vm/Vm.cpp
 
-LIB_NAME = TermDisplay.so \
-		   FileDisplay.so \
-		   countergame.so
+OBJ         = $(SRC:.cpp=.o)
 
-LIB_SRC = TermDisplay.cpp \
-		  FileDisplay.cpp \
-		  countergame.cpp
+LIB_DIR     = Lib
 
+LIBS        = $(LIB_DIR)/NCurse.so \
+              $(LIB_DIR)/Menue.so \
+              $(LIB_DIR)/Snake.so
 
-OBJ	=	$(SRC:.cpp=.o)
+all: $(LIBS) $(NAME)
 
-all:	$(LIB_NAME) $(NAME)
+$(LIB_DIR)/NCurse.so: src/libs/NCurse.cpp
+	$(CXX) $(CXXFLAGSLIB) -o $@ $< -lncurses
 
-%.so: %.cpp
+$(LIB_DIR)/Menue.so: src/games/Menue.cpp
 	$(CXX) $(CXXFLAGSLIB) -o $@ $<
 
-$(NAME):	$(OBJ)
+$(LIB_DIR)/Snake.so: src/games/Snake.cpp
+	$(CXX) $(CXXFLAGSLIB) -o $@ $<
+
+$(NAME): $(OBJ)
 	$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJ) -ldl
 
 clean:
 	rm -f $(OBJ)
 
-fclean:	clean
-	rm -f $(NAME) $(LIB_NAME)
+fclean: clean
+	rm -f $(NAME) $(LIBS)
 
-re:	fclean all
+re: fclean all
 

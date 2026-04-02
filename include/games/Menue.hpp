@@ -11,7 +11,7 @@
 class Menue : public AGame
 {
     public:
-        Menue(std::vector<std::string> games, std::vector<std::string> displays);
+        Menue();
         ~Menue() override = default;
         void update(arc::TouchSignal) override;
         std::vector<arc::Compo> get_element() override;
@@ -20,6 +20,8 @@ class Menue : public AGame
         int get_score() override;
         std::string get_lib();
         std::string get_game();
+        void set_games(std::vector<std::string> games);
+        void set_displays(std::vector<std::string> displays);
 
     private:
         std::vector<std::string> _games;

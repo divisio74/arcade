@@ -1,5 +1,7 @@
 # Arcade - Documentation architecture
 
+- Mail of the group : Pierre.baud@epitech.eu
+
 ## Compilation
 
 - Standard : **C++20** (`-std=c++20`)

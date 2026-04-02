@@ -1,9 +1,8 @@
 #include "../../include/games/Menue.hpp"
 
-Menue::Menue(std::vector<std::string> games, std::vector<std::string> displays)
+Menue::Menue()
 {
-    _games = games;
-    _displays = displays;
+
 }
 
 
@@ -105,7 +104,11 @@ std::vector<arc::Compo> Menue::get_element()
 
 void Menue::reset()
 {
-
+    _cursor = 0;
+    _section = 0;
+    _selectedGame = -1;
+    _selectedDisplay = -1;
+    _end = false;
 }
 
 bool Menue::get_end()
@@ -132,7 +135,31 @@ std::string Menue::get_game()
     return _games[_selectedGame];
 }
 
-extern "C" Menue *CreateGame(std::vector<std::string> games, std::vector<std::string> displays) {
-    return new Menue(games, displays);
+void Menue::set_games(std::vector<std::string> games)
+{
+    _games = games;
 }
 
+void Menue::set_displays(std::vector<std::string> displays)
+{
+    _displays = displays;
+}
+
+
+extern "C" Menue *CreateGame() {
+    return new Menue();
+}
+
+extern "C" void SetLists(IGame *game, std::vector<std::string> games, std::vector<std::string> displays) {
+    Menue *m = static_cast<Menue*>(game);
+    m->set_games(games);
+    m->set_displays(displays);
+}
+
+extern "C" std::string GetChosenGame(IGame *game) {
+    return static_cast<Menue*>(game)->get_game();
+}
+
+extern "C" std::string GetChosenDisplay(IGame *game) {
+    return static_cast<Menue*>(game)->get_lib();
+}

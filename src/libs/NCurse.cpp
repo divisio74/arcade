@@ -32,7 +32,7 @@ arc::TouchSignal NCurse::signal()
 
 void NCurse::display(std::vector<arc::Compo>)
 {
-    
+
 }
 
 extern "C" IDisplay* CreateDisplay() {
