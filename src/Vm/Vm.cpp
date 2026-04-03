@@ -3,7 +3,7 @@
 
 int Vm::handle_lib()
 {
-    const char *path = "./Lib";
+    const char *path = "./lib";
     DIR* dir = opendir(path);
     struct dirent* libs;
     void *lib;
