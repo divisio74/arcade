@@ -6,7 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "Compo.hpp"
+#include "../Vm/Compo.hpp"
 #include "../Vm/ADisplay.hpp"
 
 class NCurse : public ADisplay

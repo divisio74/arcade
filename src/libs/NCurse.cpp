@@ -1,5 +1,5 @@
 
-#include "NCurse.hpp"
+#include "../../include/libs/NCurse.hpp"
 #include <ncurses.h>
 
 NCurse::NCurse()
