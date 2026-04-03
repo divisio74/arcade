@@ -57,7 +57,7 @@ std::vector<arc::Compo> Menue::get_element()
     std::size_t lib_len = _displays.size();
     std::size_t game_len = _games.size();
 
-    for (int i = 0; i < game_len; i++) {
+    for (size_t i = 0; i < game_len; i++) {
         arc::Compo game;
         game.x = 2;
         game.y = 2 + i;
@@ -86,7 +86,7 @@ std::vector<arc::Compo> Menue::get_element()
     total.push_back(displays_title);
 
 
-    for (int i = 0; i < lib_len; i++) {
+    for (size_t i = 0; i < lib_len; i++) {
         arc::Compo lib;
         lib.x = 2;
         lib.y = game_len + 4 + i;
