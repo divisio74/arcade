@@ -1,4 +1,4 @@
-#include "Snake.hpp"
+#include "../../include/games/Snake.hpp"
 
 Snake::Snake()
 {
@@ -54,6 +54,12 @@ void Snake::update(arc::TouchSignal input)
     if (head.first < 0 || head.first >= 20 || head.second < 0 || head.second >= 20)
         _end = true;
     
+    for (size_t i = 0; i < _snake.size() - 1; i++) {
+        if (_snake[i] == head) {
+            _end = true;
+            return;
+        }
+    }
     _snake.insert(_snake.begin(), head);
 
     if (head == _apple) {
@@ -74,7 +80,10 @@ std::vector<arc::Compo> Snake::get_element()
         c.x = _snake[i].first;
         c.y = _snake[i].second;
         c.sprite = "Untitled.jpg";
-        c.color = arc::Color::GREEN;
+        if (i == 0)
+            c.color = arc::Color::CYAN;
+        else
+            c.color = arc::Color::GREEN;
         element.push_back(c);
     }
 
