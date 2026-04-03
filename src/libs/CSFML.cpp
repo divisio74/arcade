@@ -1,13 +1,8 @@
-#include "CSFML.hpp"
+#include "../../include/libs/CSFML.hpp"
 
 CSFML::CSFML() : _window(nullptr)
 {
 
-}
-
-CSFML::~CSFML()
-{
-    close_window();
 }
 
 void CSFML::open_window()
@@ -27,5 +22,90 @@ void CSFML::close_window()
 void CSFML::clear_window()
 {
     if (_window)
-        _window->clear();
+        _window->clear(sf::Color::Black);
+}
+
+arc::TouchSignal CSFML::signal()
+{
+    arc::TouchSignal input_signal;
+    sf::Event event;
+
+    input_signal.touch = arc::Touch::NONE;
+    while (_window->pollEvent(event)) {
+        if (event.type == sf::Event::Closed)
+            input_signal.touch = arc::Touch::ESCAPE;
+        else if (event.type == sf::Event::KeyPressed) {
+            if (event.key.code == sf::Keyboard::Up)
+                input_signal.touch = arc::Touch::UP;
+            else if (event.key.code == sf::Keyboard::Down)
+                input_signal.touch = arc::Touch::DOWN;
+            else if (event.key.code == sf::Keyboard::Left)
+                input_signal.touch = arc::Touch::LEFT;
+            else if (event.key.code == sf::Keyboard::Right)
+                input_signal.touch = arc::Touch::RIGHT;
+            else if (event.key.code == sf::Keyboard::Escape)
+                input_signal.touch = arc::Touch::ESCAPE;
+            else if (event.key.code == sf::Keyboard::Enter)
+                input_signal.touch = arc::Touch::ENTER;
+            else if (event.key.code == sf::Keyboard::Tab)
+                input_signal.touch = arc::Touch::TAB;
+        }
+    }
+    return input_signal;
+}
+void CSFML::display(std::vector<arc::Compo> elems)
+{
+    if (!_window)
+        return;
+    _window->clear(sf::Color::Black);
+
+    static sf::Font font;
+    static bool fontLoaded = false;
+    if (!fontLoaded) {
+        font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf");
+        fontLoaded = true;
+    }
+
+    for (size_t i = 0; i < elems.size(); i++) {
+        arc::Compo c = elems[i];
+
+        sf::Color sfColor;
+        if (c.color == arc::Color::GREEN)
+            sfColor = sf::Color::Green;
+        else if (c.color == arc::Color::RED)
+            sfColor = sf::Color::Red;
+        else if (c.color == arc::Color::CYAN)
+            sfColor = sf::Color::Cyan;
+        else if (c.color == arc::Color::YELLOW)
+            sfColor = sf::Color::Yellow;
+        else if (c.color == arc::Color::BLUE)
+            sfColor = sf::Color::Blue;
+        else if (c.color == arc::Color::MAGENTA)
+            sfColor = sf::Color::Magenta;
+        else
+            sfColor = sf::Color::White;
+
+        bool isSprite = (c.sprite.find(".jpg") != std::string::npos ||
+             c.sprite.find(".png") != std::string::npos);
+
+        if (c.sprite.empty() || isSprite) {
+            sf::RectangleShape rect(sf::Vector2f(_cell_size, _cell_size));
+            rect.setPosition(c.x * _cell_size, c.y * _cell_size);
+            rect.setFillColor(sfColor);
+            _window->draw(rect);
+        } else {
+            sf::Text text;
+            text.setFont(font);
+            text.setString(c.sprite);
+            text.setCharacterSize(20);
+            text.setPosition(c.x * 20 + 10, c.y * 25 + 10);
+            text.setFillColor(sfColor);
+            _window->draw(text);
+        }
+    }
+    _window->display();
+}
+
+extern "C" IDisplay* CreateDisplay() {
+    return new CSFML();
 }
