@@ -1,5 +1,7 @@
 #include "../../include/Vm/Vm.hpp"
 #include <dirent.h>
+#include <thread>
+#include <chrono>
 
 int Vm::handle_lib()
 {
@@ -42,7 +44,7 @@ IGame *Vm::load_menu(void *&lib)
     typedef IGame* (*menufunc)();
     typedef void (*setlistsfunc)(IGame*, std::vector<std::string>, std::vector<std::string>);
 
-    lib = dlopen("./Lib/Menue.so", RTLD_LAZY);
+    lib = dlopen("./lib/arcade_menue.so", RTLD_LAZY);
     IGame *menu = ((menufunc)dlsym(lib, "CreateGame"))();
     setlistsfunc sfunc = (setlistsfunc)dlsym(lib, "SetLists");
     if (sfunc)
@@ -78,6 +80,7 @@ bool Vm::run_game(IGame *game, IDisplay *&display, void *&display_lib)
 
     display->open_window();
     while (!game->get_end()) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         arc::TouchSignal sig = display->signal();
 
         if (sig.touch == arc::Touch::ESCAPE) {
