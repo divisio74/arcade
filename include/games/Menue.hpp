@@ -26,7 +26,7 @@ class Menue : public AGame
     private:
         std::vector<std::string> _games;
         std::vector<std::string> _displays;
-        std::size_t _cursor = 0;
+        int _cursor = 0;
         int _section = 0;
         int _selectedGame = -1;
         int _selectedDisplay = -1;

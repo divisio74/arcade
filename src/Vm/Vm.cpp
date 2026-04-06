@@ -1,4 +1,5 @@
 #include "../../include/Vm/Vm.hpp"
+#include "../../include/Vm/CustomError.hpp"
 #include <dirent.h>
 #include <thread>
 #include <chrono>
@@ -8,7 +9,6 @@ int Vm::handle_lib()
     const char *path = "./lib";
     DIR* dir = opendir(path);
     struct dirent* libs;
-    void *lib;
 
     if (!dir)
         return 1;
@@ -19,12 +19,13 @@ int Vm::handle_lib()
 
         if (len > 3 && name.substr(len - 3) == ".so") {
             std::string full_path = std::string(path) + "/" + name;
-            lib = dlopen(full_path.c_str(), RTLD_LAZY);
-            if (dlsym(lib, "CreateDisplay"))
+            Libdl lib(full_path);
+            std::string symDisplay = "CreateDisplay";
+            std::string symGame = "CreateGame";
+            if (lib.IsSymbol(symDisplay))
                 _displays.push_back(full_path);
-            else if (dlsym(lib, "CreateGame"))
+            else if (lib.IsSymbol(symGame))
                 _games.push_back(full_path);
-            dlclose(lib);
         }
         libs = readdir(dir);
     }
@@ -32,21 +33,25 @@ int Vm::handle_lib()
     return 0;
 }
 
-IDisplay *Vm::load_display(const std::string &path, void *&lib)
+IDisplay *Vm::load_display(std::string &path, Libdl *&lib)
 {
     typedef IDisplay* (*dispfunc)();
-    lib = dlopen(path.c_str(), RTLD_LAZY);
-    return ((dispfunc)dlsym(lib, "CreateDisplay"))();
+    lib = new Libdl(path);
+    std::string sym = "CreateDisplay";
+    return lib->DlSymbol<dispfunc>(sym)();
 }
 
-IGame *Vm::load_menu(void *&lib)
+IGame *Vm::load_menu(Libdl *&lib)
 {
     typedef IGame* (*menufunc)();
     typedef void (*setlistsfunc)(IGame*, std::vector<std::string>, std::vector<std::string>);
 
-    lib = dlopen("./lib/arcade_menue.so", RTLD_LAZY);
-    IGame *menu = ((menufunc)dlsym(lib, "CreateGame"))();
-    setlistsfunc sfunc = (setlistsfunc)dlsym(lib, "SetLists");
+    std::string menue_path = "./lib/arcade_menue.so";
+    lib = new Libdl(menue_path);
+    std::string symCreate = "CreateGame";
+    IGame *menu = lib->DlSymbol<menufunc>(symCreate)();
+    std::string symSet = "SetLists";
+    setlistsfunc sfunc = lib->DlSymbol<setlistsfunc>(symSet);
     if (sfunc)
         sfunc(menu, _games, _displays);
     return menu;
@@ -70,7 +75,7 @@ bool Vm::run_menu(IGame *menu, IDisplay *display)
     return true;
 }
 
-bool Vm::run_game(IGame *game, IDisplay *&display, void *&display_lib)
+bool Vm::run_game(IGame *game, IDisplay *&display, Libdl *&display_lib)
 {
     int disp_index = 0;
     for (int i = 0; i < (int)_displays.size(); i++) {
@@ -90,7 +95,7 @@ bool Vm::run_game(IGame *game, IDisplay *&display, void *&display_lib)
 
         if (sig.touch == arc::Touch::TAB) {
             display->close_window();
-            dlclose(display_lib);
+            delete display_lib;
             disp_index = (disp_index + 1) % (int)_displays.size();
             _current_display_path = _displays[disp_index];
             display = load_display(_current_display_path, display_lib);
@@ -105,10 +110,10 @@ bool Vm::run_game(IGame *game, IDisplay *&display, void *&display_lib)
     return true;
 }
 
-void Vm::main_boucle(const std::string &default_display_path)
+void Vm::main_boucle(std::string &default_display_path)
 {
-    void *DefaultLib;
-    void *MenueLib;
+    Libdl *DefaultLib;
+    Libdl *MenueLib;
     _current_display_path = default_display_path;
     IDisplay *Default = load_display(default_display_path, DefaultLib);
     IGame *menu;
@@ -116,8 +121,10 @@ void Vm::main_boucle(const std::string &default_display_path)
 
     handle_lib();
     menu = load_menu(MenueLib);
-    getterfunc gGame = (getterfunc)dlsym(MenueLib, "GetChosenGame");
-    getterfunc gDisp = (getterfunc)dlsym(MenueLib, "GetChosenDisplay");
+    std::string symGetGame = "GetChosenGame";
+    std::string symGetDisp = "GetChosenDisplay";
+    getterfunc gGame = MenueLib->DlSymbol<getterfunc>(symGetGame);
+    getterfunc gDisp = MenueLib->DlSymbol<getterfunc>(symGetDisp);
 
     while (true) {
         if (!run_menu(menu, Default))
@@ -127,17 +134,18 @@ void Vm::main_boucle(const std::string &default_display_path)
         std::string chosen_display = gDisp(menu);
         _current_display_path = chosen_display;
 
-        void *GameLib;
-        void *DisplayLib;
-        typedef IGame*(*gamefunc)();
-        GameLib = dlopen(chosen_game.c_str(), RTLD_LAZY);
-        IGame *game = ((gamefunc)dlsym(GameLib, "CreateGame"))();
+        Libdl *GameLib;
+        Libdl *DisplayLib;
+        typedef IGame* (*gamefunc)();
+        GameLib = new Libdl(chosen_game);
+        std::string symCreate = "CreateGame";
+        IGame *game = GameLib->DlSymbol<gamefunc>(symCreate)();
         IDisplay *display = load_display(chosen_display, DisplayLib);
 
         run_game(game, display, DisplayLib);
-        dlclose(GameLib);
-        dlclose(DisplayLib);
+        delete GameLib;
+        delete DisplayLib;
     }
-    dlclose(DefaultLib);
-    dlclose(MenueLib);
+    delete DefaultLib;
+    delete MenueLib;
 }

@@ -6,6 +6,7 @@ int main(int argc, char *argv[]) {
         return 0;
 
     Vm vm;
-    vm.main_boucle(argv[1]);
+    std::string display_path = argv[1];
+    vm.main_boucle(display_path);
     return 0;
 }

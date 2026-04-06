@@ -8,8 +8,8 @@ Menue::Menue()
 
 void Menue::update(arc::TouchSignal signal)
 {
-    std::size_t lib_len = _displays.size();
-    std::size_t game_len = _games.size();
+    int lib_len = _displays.size();
+    int game_len = _games.size();
 
     if (signal.touch == arc::Touch::ENTER) {
         if (_section == 0)
@@ -54,10 +54,10 @@ void Menue::update(arc::TouchSignal signal)
 std::vector<arc::Compo> Menue::get_element()
 {
     std::vector<arc::Compo> total;
-    std::size_t lib_len = _displays.size();
-    std::size_t game_len = _games.size();
+    int lib_len = _displays.size();
+    int game_len = _games.size();
 
-    for (size_t i = 0; i < game_len; i++) {
+    for (int i = 0; i < game_len; i++) {
         arc::Compo game;
         game.x = 2;
         game.y = 2 + i;
@@ -86,7 +86,7 @@ std::vector<arc::Compo> Menue::get_element()
     total.push_back(displays_title);
 
 
-    for (size_t i = 0; i < lib_len; i++) {
+    for (int i = 0; i < lib_len; i++) {
         arc::Compo lib;
         lib.x = 2;
         lib.y = game_len + 4 + i;

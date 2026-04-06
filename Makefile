@@ -5,7 +5,9 @@ CXXFLAGS    = -std=c++20 -Wall -Wextra -fno-gnu-unique
 CXXFLAGSLIB = -shared -fPIC -fno-gnu-unique -std=c++20 -Wall -Wextra
 
 SRC         = main.cpp \
-              src/Vm/Vm.cpp
+              src/Vm/Vm.cpp \
+              src/Vm/Libdl.cpp \
+              src/Vm/CustomError.cpp
 
 OBJ         = $(SRC:.cpp=.o)
 
