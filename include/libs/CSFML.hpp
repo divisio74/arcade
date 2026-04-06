@@ -19,6 +19,8 @@ class CSFML : public ADisplay
     private:
         sf::RenderWindow* _window;
         int _cell_size = 32;
+        sf::Font _font;
+        bool _fontLoaded = false;
 };
 
 #endif

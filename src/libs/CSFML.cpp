@@ -59,11 +59,9 @@ void CSFML::display(std::vector<arc::Compo> elems)
         return;
     _window->clear(sf::Color::Black);
 
-    static sf::Font font;
-    static bool fontLoaded = false;
-    if (!fontLoaded) {
-        font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf");
-        fontLoaded = true;
+    if (!_fontLoaded) {
+        _font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf");
+        _fontLoaded = true;
     }
 
     for (size_t i = 0; i < elems.size(); i++) {
@@ -95,7 +93,7 @@ void CSFML::display(std::vector<arc::Compo> elems)
             _window->draw(rect);
         } else {
             sf::Text text;
-            text.setFont(font);
+            text.setFont(_font);
             text.setString(c.sprite);
             text.setCharacterSize(20);
             text.setPosition(c.x * 20 + 10, c.y * 25 + 10);
