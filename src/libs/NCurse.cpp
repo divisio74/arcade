@@ -63,27 +63,8 @@ arc::TouchSignal NCurse::signal()
 
 void NCurse::display(std::vector<arc::Compo> elems)
 {
-    clear();
-
-    int gameW = 20;
-    int gameH = 20;
-    int offsetX = 2; 
+    int offsetX = 2;
     int offsetY = 1;
-
-    attron(COLOR_PAIR(3));
-    mvprintw(offsetY, offsetX * 2 - 2, "+-");
-    mvprintw(offsetY, offsetX * 2 + gameW * 2, "-+");
-    mvprintw(offsetY + gameH + 1, offsetX * 2 - 2, "+-");
-    mvprintw(offsetY + gameH + 1, offsetX * 2 + gameW * 2, "-+");
-    for (int x = 0; x < gameW; x++) {
-        mvprintw(offsetY, offsetX * 2 + x * 2, "--");
-        mvprintw(offsetY + gameH + 1, offsetX * 2 + x * 2, "--");
-    }
-    for (int y = 1; y <= gameH; y++) {
-        mvprintw(offsetY + y, offsetX * 2 - 2, "| ");
-        mvprintw(offsetY + y, offsetX * 2 + gameW * 2, " |");
-    }
-    attroff(COLOR_PAIR(3));
 
     for (size_t i = 0; i < elems.size(); i++) {
         arc::Compo c = elems[i];
@@ -94,25 +75,22 @@ void NCurse::display(std::vector<arc::Compo> elems)
         else if (c.color == arc::Color::RED)
             color = 3;
         else if (c.color == arc::Color::CYAN)
-           color = 4;
+            color = 4;
         else if (c.color == arc::Color::YELLOW)
             color = 5;
         else if (c.color == arc::Color::BLUE)
             color = 6;
         else if (c.color == arc::Color::MAGENTA)
             color = 7;
-        else
-            color = 1;
 
-        bool isSprite = (c.sprite.find(".jpg") != std::string::npos ||
-                         c.sprite.find(".png") != std::string::npos);
+        bool isImage = (c.sprite.find(".jpg") != std::string::npos ||
+                        c.sprite.find(".png") != std::string::npos);
 
         attron(COLOR_PAIR(color));
-        if (c.sprite.empty() || isSprite) {
-            mvprintw(c.y + offsetY + 1, c.x * 2 + offsetX * 2, "[]");
-        } else {
-            mvprintw(c.y, c.x * 2, "%s", c.sprite.c_str());
-        }
+        if (isImage)
+            mvprintw(c.y + offsetY, c.x * 2 + offsetX, "[]");
+        else
+            mvprintw(c.y + offsetY, c.x * 2 + offsetX, "%s", c.sprite.c_str());
         attroff(COLOR_PAIR(color));
     }
 

@@ -10,10 +10,10 @@ void Snake::reset()
     _score = 0;
     _end = false;
     _snake.clear();
-    _snake.push_back({10,10});
-    _snake.push_back({9,10});
-    _snake.push_back({8,10});
-    _snake.push_back({7,10});
+    _snake.push_back({6,10});
+    _snake.push_back({5,10});
+    _snake.push_back({4,10});
+    _snake.push_back({3,10});
     _dir = arc::Touch::RIGHT;
     spawn_apple();
 
@@ -37,9 +37,12 @@ void Snake::spawn_apple()
 
 void Snake::update(arc::TouchSignal input)
 {
-    if (input.touch != arc::Touch::NONE)
+    if ((input.touch == arc::Touch::UP    && _dir != arc::Touch::DOWN)  ||
+        (input.touch == arc::Touch::DOWN  && _dir != arc::Touch::UP)    ||
+        (input.touch == arc::Touch::LEFT  && _dir != arc::Touch::RIGHT) ||
+        (input.touch == arc::Touch::RIGHT && _dir != arc::Touch::LEFT))
         _dir = input.touch;
-    
+
     std::pair<int,int> head = _snake.front();
 
     if (_dir == arc::Touch::UP)
@@ -50,10 +53,12 @@ void Snake::update(arc::TouchSignal input)
         head.first++;
     if (_dir == arc::Touch::LEFT)
         head.first--;
-    
-    if (head.first < 0 || head.first >= 20 || head.second < 0 || head.second >= 20)
+
+    if (head.first < 0 || head.first > 20 || head.second < 0 || head.second > 20) {
         _end = true;
-    
+        return;
+    }
+
     for (size_t i = 0; i < _snake.size() - 1; i++) {
         if (_snake[i] == head) {
             _end = true;

@@ -62,6 +62,7 @@ bool Vm::run_menu(IGame *menu, IDisplay *display)
     menu->reset();
     display->open_window();
     while (!menu->get_end()) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
         display->clear_window();
         display->display(menu->get_element());
         arc::TouchSignal sig = display->signal();
