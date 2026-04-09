@@ -14,7 +14,8 @@ OBJ         = $(SRC:.cpp=.o)
 LIB_DIR     = lib
 
 GRAPHICALS  = $(LIB_DIR)/arcade_ncurses.so \
-              $(LIB_DIR)/arcade_csfml.so
+              $(LIB_DIR)/arcade_csfml.so \
+			  $(LIB_DIR)/arcade_sdl2.so
 
 GAMES       = $(LIB_DIR)/arcade_menue.so \
               $(LIB_DIR)/arcade_snake.so
@@ -38,7 +39,12 @@ $(LIB_DIR)/arcade_snake.so: src/games/Snake.cpp
 
 graphicals: $(GRAPHICALS)
 
+$(LIB_DIR)/arcade_sdl2.so: src/libs/SDL2.cpp
+	mkdir -p $(LIB_DIR)
+	$(CXX) $(CXXFLAGSLIB) -o $@ $< -lSDL2 -lSDL2_ttf
+
 $(LIB_DIR)/arcade_ncurses.so: src/libs/NCurse.cpp
+	mkdir -p $(LIB_DIR)
 	$(CXX) $(CXXFLAGSLIB) -o $@ $< -lncurses
 
 $(LIB_DIR)/arcade_csfml.so: src/libs/CSFML.cpp
