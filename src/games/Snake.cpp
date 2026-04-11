@@ -84,7 +84,7 @@ std::vector<arc::Compo> Snake::get_element()
         arc::Compo c;
         c.x = _snake[i].first;
         c.y = _snake[i].second;
-        c.sprite = "Untitled.jpg";
+        c.sprite = "";
         if (i == 0)
             c.color = arc::Color::CYAN;
         else
@@ -95,7 +95,7 @@ std::vector<arc::Compo> Snake::get_element()
     arc::Compo apple;
     apple.x = _apple.first;
     apple.y = _apple.second;
-    apple.sprite = "pomme.jpg";
+    apple.sprite = "";
     apple.color = arc::Color::RED;
     element.push_back(apple);
 
