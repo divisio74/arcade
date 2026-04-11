@@ -83,7 +83,7 @@ void CSFML::display(std::vector<arc::Compo> elems)
         else
             sfColor = sf::Color::White;
 
-        if (c.sprite.empty() || c.sprite == "") {
+        if (c.sprite.empty() || c.sprite == "carre.jpg") {
             sf::RectangleShape rect(sf::Vector2f(_cell_size, _cell_size));
             rect.setPosition(c.x * _cell_size, c.y * _cell_size);
             rect.setFillColor(sfColor);

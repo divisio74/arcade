@@ -75,7 +75,7 @@ void SDL2::display(std::vector<arc::Compo> elems)
         else
             color = {255, 255, 255, 255};
 
-        if (c.sprite.empty() || c.sprite == "") {
+        if (c.sprite.empty() || c.sprite == "carre.jpg") {
             SDL_Rect rect;
             rect.x = c.x * _cell_size;
             rect.y = c.y * _cell_size;
