@@ -144,9 +144,13 @@ void Vm::main_boucle(std::string &default_display_path)
         IDisplay *display = load_display(chosen_display, DisplayLib);
 
         run_game(game, display, DisplayLib);
+        delete game;
+        delete display;
         delete GameLib;
         delete DisplayLib;
     }
+    delete Default;
+    delete menu;
     delete DefaultLib;
     delete MenueLib;
 }

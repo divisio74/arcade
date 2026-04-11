@@ -1,6 +1,6 @@
 #include "../../include/libs/CSFML.hpp"
 
-CSFML::CSFML() : _window(nullptr)
+CSFML::CSFML() : _window(nullptr), _fontLoaded(false)
 {
 
 }
@@ -83,10 +83,7 @@ void CSFML::display(std::vector<arc::Compo> elems)
         else
             sfColor = sf::Color::White;
 
-        bool isSprite = (c.sprite.find(".jpg") != std::string::npos ||
-             c.sprite.find(".png") != std::string::npos);
-
-        if (c.sprite.empty() || isSprite) {
+        if (c.sprite.empty() || c.sprite == "") {
             sf::RectangleShape rect(sf::Vector2f(_cell_size, _cell_size));
             rect.setPosition(c.x * _cell_size, c.y * _cell_size);
             rect.setFillColor(sfColor);

@@ -3,7 +3,7 @@
 
 Libdl::Libdl(std::string &path)
 {
-    void *temp = dlopen(path.c_str(), RTLD_LAZY);
+    void *temp = dlopen(path.c_str(), RTLD_LAZY | RTLD_NODELETE);
     if (!temp)
         return;
     _opened_dl = temp;

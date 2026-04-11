@@ -52,7 +52,7 @@ void SDL2::display(std::vector<arc::Compo> elems)
 {
     clear_window();
     if (!_fontLoaded) {
-        _font = TTF_OpenFont("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20);
+        _font = TTF_OpenFont("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", _cell_size);
         _fontLoaded = true;
     }
 
@@ -75,7 +75,7 @@ void SDL2::display(std::vector<arc::Compo> elems)
         else
             color = {255, 255, 255, 255};
 
-        if (c.sprite.empty()) {
+        if (c.sprite.empty() || c.sprite == "") {
             SDL_Rect rect;
             rect.x = c.x * _cell_size;
             rect.y = c.y * _cell_size;
@@ -84,12 +84,19 @@ void SDL2::display(std::vector<arc::Compo> elems)
             SDL_SetRenderDrawColor(_renderer, color.r, color.g, color.b, color.a);
             SDL_RenderFillRect(_renderer, &rect);
         } else {
-            // a continuer la partie ou on v af ficher le texte
-            // on va avoir besoin de la texture et surface a regarder
-            // sur les docus dee SDL2 je crois il faut aussi charger le render pour
-            // afficher ce qu'on dessine. Exactemznt comme CSFML
+            SDL_Surface* surface = TTF_RenderText_Blended(_font, c.sprite.c_str(), color);
+            SDL_Texture* texture = SDL_CreateTextureFromSurface(_renderer, surface);
+            SDL_Rect dst;
+            dst.x = c.x * 20 + 10;
+            dst.y = c.y * 25 + 10;
+            dst.w = _cell_size;
+            dst.h = _cell_size;
+            SDL_RenderCopy(_renderer, texture, nullptr, &dst);
+            SDL_DestroyTexture(texture);
+            SDL_FreeSurface(surface);
         }
      }
+     SDL_RenderPresent(_renderer);
 }
 
 void SDL2::close_window()
