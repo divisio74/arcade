@@ -87,8 +87,8 @@ void SDL2::display(std::vector<arc::Compo> elems)
             SDL_Surface* surface = TTF_RenderText_Blended(_font, c.sprite.c_str(), color);
             SDL_Texture* texture = SDL_CreateTextureFromSurface(_renderer, surface);
             SDL_Rect dst;
-            dst.x = c.x * 20 + 10;
-            dst.y = c.y * 25 + 10;
+            dst.x = c.x * _cell_size;
+            dst.y = c.y * _cell_size;
             dst.w = _cell_size;
             dst.h = _cell_size;
             SDL_RenderCopy(_renderer, texture, nullptr, &dst);

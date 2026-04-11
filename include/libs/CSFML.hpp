@@ -18,7 +18,7 @@ class CSFML : public ADisplay
         void clear_window() override;
     private:
         sf::RenderWindow* _window;
-        int _cell_size = 32;
+        int _cell_size = 30;
         sf::Font _font;
         bool _fontLoaded = false;
 };

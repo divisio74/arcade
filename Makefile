@@ -18,7 +18,8 @@ GRAPHICALS  = $(LIB_DIR)/arcade_ncurses.so \
 			  $(LIB_DIR)/arcade_sdl2.so
 
 GAMES       = $(LIB_DIR)/arcade_menue.so \
-              $(LIB_DIR)/arcade_snake.so
+              $(LIB_DIR)/arcade_snake.so \
+			  $(LIB_DIR)/arcade_pacman.so \
 
 all: core games graphicals
 
@@ -30,6 +31,10 @@ core: $(OBJ)
 games: $(GAMES)
 
 $(LIB_DIR)/arcade_menue.so: src/games/Menue.cpp
+	mkdir -p $(LIB_DIR)
+	$(CXX) $(CXXFLAGSLIB) -o $@ $<
+
+$(LIB_DIR)/arcade_pacman.so: src/games/Pacman.cpp
 	mkdir -p $(LIB_DIR)
 	$(CXX) $(CXXFLAGSLIB) -o $@ $<
 

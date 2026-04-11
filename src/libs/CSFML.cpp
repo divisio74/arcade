@@ -7,7 +7,7 @@ CSFML::CSFML() : _window(nullptr), _fontLoaded(false)
 
 void CSFML::open_window()
 {
-    _window = new sf::RenderWindow(sf::VideoMode(640, 640), "Arcade");
+    _window = new sf::RenderWindow(sf::VideoMode(800, 800), "Arcade");
 }
 
 void CSFML::close_window()
@@ -92,8 +92,8 @@ void CSFML::display(std::vector<arc::Compo> elems)
             sf::Text text;
             text.setFont(_font);
             text.setString(c.sprite);
-            text.setCharacterSize(20);
-            text.setPosition(c.x * 20 + 10, c.y * 25 + 10);
+            text.setCharacterSize(_cell_size);
+            text.setPosition(c.x * _cell_size + 10 , c.y * _cell_size - 10);
             text.setFillColor(sfColor);
             _window->draw(text);
         }

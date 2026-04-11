@@ -1,9 +1,11 @@
 #ifndef PACMAN_HPP
-    #define PACMAN_hpp
+    #define PACMAN_HPP
 
     #include "../Vm/AGame.hpp"
     #include <vector>
     #include <chrono>
+    #include <cstdlib>
+    #include <ctime>
 
     class PacMan : public AGame
     {
@@ -27,14 +29,18 @@
         int _pacmanDirX;
         int _pacmanDirY;
         int _pacmanKeyDirX;
-        int _pacmanKeyDiry;
+        int _pacmanKeyDirY;
 
         std::chrono::steady_clock::time_point _startTime;
-        int _map[20][20];
+        int _map[21][21];
         int _score;
         int _pacgumsLeft;
         bool _gameOver;
         bool _won;
+
+        bool isWall(int x, int y);
+        void movePacman();
+        void moveGhosts();
             
     public:
         PacMan();
