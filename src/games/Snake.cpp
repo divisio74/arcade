@@ -23,8 +23,8 @@ void Snake::spawn_apple()
 {
     bool good_spawn = false;
     while (!good_spawn) {
-        _apple.first = rand() % 20;
-        _apple.second = rand() % 20;
+        _apple.first = rand() % 19 + 1;
+        _apple.second = rand() % 19 + 1;
         good_spawn = true;
         for (size_t i = 0; i < _snake.size(); i++) {
             if (_snake[i] == _apple) {
@@ -54,7 +54,7 @@ void Snake::update(arc::TouchSignal input)
     if (_dir == arc::Touch::LEFT)
         head.first--;
 
-    if (head.first < 0 || head.first > 20 || head.second < 0 || head.second > 20) {
+    if (head.first < 1 || head.first > 19 || head.second < 1 || head.second > 19) {
         _end = true;
         return;
     }
@@ -79,12 +79,32 @@ std::vector<arc::Compo> Snake::get_element()
 {
     std::vector<arc::Compo> element;
 
+    for (int x = 0; x < 21; x++) {
+        arc::Compo c;
+        c.sprite = "carre.jpg";
+        c.color = arc::Color::BLUE;
+        c.x = x;
+        c.y = 0; 
+        element.push_back(c);
+        c.y = 20;
+        element.push_back(c);
+    }
+    for (int y = 0; y < 21; y++) {
+        arc::Compo c;
+        c.sprite = "carre.jpg";
+        c.color = arc::Color::BLUE;
+        c.y = y;
+        c.x = 0;
+        element.push_back(c);
+        c.x = 20;
+        element.push_back(c);
+    }
     for (size_t i = 0; i < _snake.size(); i++)
     {
         arc::Compo c;
         c.x = _snake[i].first;
         c.y = _snake[i].second;
-        c.sprite = "Untitled.jpg";
+        c.sprite = "carre.jpg";
         if (i == 0)
             c.color = arc::Color::CYAN;
         else
@@ -95,10 +115,16 @@ std::vector<arc::Compo> Snake::get_element()
     arc::Compo apple;
     apple.x = _apple.first;
     apple.y = _apple.second;
-    apple.sprite = "pomme.jpg";
+    apple.sprite = "carre.jpg";
     apple.color = arc::Color::RED;
     element.push_back(apple);
 
+    arc::Compo score;
+    score.x = 0;
+    score.y = 21;
+    score.sprite = "Score: " + std::to_string(_score);
+    score.color = arc::Color::WHITE;
+    element.push_back(score);
     return element;
 }
 

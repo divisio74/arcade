@@ -5,15 +5,15 @@ static const int MAP[21][21] = {
     {0,1,1,2,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,0},
     {0,1,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,0,0,1,0},
     {0,1,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,0,0,1,0},
-    {3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3},
+    {3,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,3},
     {0,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,1,0},
     {0,1,0,0,0,0,1,1,1,1,0,1,1,1,1,0,0,0,0,1,0},
     {0,1,1,1,1,1,1,0,0,1,1,1,0,0,1,1,1,1,1,1,0},
     {0,1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1,0},
-    {0,1,1,1,1,0,1,0,3,3,3,3,3,0,1,0,1,1,1,1,0},
-    {0,0,0,0,2,1,1,1,3,3,3,3,3,1,1,1,2,0,0,0,0},
-    {0,1,1,1,1,0,1,0,3,3,3,3,3,0,1,0,1,1,1,1,0},
-    {0,1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1,0},
+    {0,1,1,1,1,0,1,1,3,3,3,3,3,1,1,0,1,1,1,1,0},
+    {0,0,0,0,2,1,1,0,3,3,3,3,3,0,1,1,2,0,0,0,0},
+    {0,1,1,1,1,0,1,1,3,3,3,3,3,1,1,0,1,1,1,1,0},
+    {0,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,1,0},
     {0,1,1,1,1,1,1,0,0,1,1,1,0,0,1,1,1,1,1,1,0},
     {0,1,0,0,0,0,1,1,1,1,0,1,1,1,1,0,0,0,0,1,0},
     {0,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,1,0},
@@ -26,7 +26,6 @@ static const int MAP[21][21] = {
 
 PacMan::PacMan()
 {
-    srand(time(nullptr));
     _pacgumsLeft = 0;
     _score = 0;
     for (int y = 0; y < 21; y++) {
@@ -105,6 +104,46 @@ void PacMan::movePacman()
 
 void PacMan::moveGhosts()
 {
+    float timePassed = std::chrono::duration<float>(std::chrono::steady_clock::now() - _startTime).count();
+
+    if (!_ghostsOut && timePassed >= 10.0f)
+        _ghostsOut = true;
+    if (!_ghostsOut)
+        return;
+    
+    int dx[4] = {1, -1, 0,  0};
+    int dy[4] = {0,  0, 1, -1};
+
+    for (int i = 0; i < 4; i++) {
+        int nx = _ghosts[i]._x + _ghosts[i]._direction_x;
+        int ny = _ghosts[i]._y + _ghosts[i]._direction_y;
+        if (isWall(nx, ny)) {
+            int tries = 0;
+            while (tries < 10) {
+                int r = rand() % 4;
+                nx = _ghosts[i]._x + dx[r];
+                ny = _ghosts[i]._y + dy[r];
+                if (!isWall(nx, ny)) {
+                    _ghosts[i]._direction_x = dx[r];
+                    _ghosts[i]._direction_y = dy[r];
+                    break;
+                }
+                tries++;
+            }
+        }
+        _ghosts[i]._x += _ghosts[i]._direction_x;
+        _ghosts[i]._y += _ghosts[i]._direction_y;
+        if (_ghosts[i]._x < 0)
+            _ghosts[i]._x = 20;
+        if (_ghosts[i]._x > 20)
+            _ghosts[i]._x = 0;
+        if (_ghosts[i]._y < 0)
+            _ghosts[i]._y = 20;
+        if (_ghosts[i]._y > 20)
+            _ghosts[i]._y = 0;
+        if (_ghosts[i]._x == _pacmanX && _ghosts[i]._y == _pacmanY)
+            _gameOver = true;
+    }
 }
 
 void PacMan::update(arc::TouchSignal signal)
@@ -125,8 +164,15 @@ void PacMan::update(arc::TouchSignal signal)
         _pacmanKeyDirX =  1;
         _pacmanKeyDirY =  0;
     }
-    if (!_gameOver && !_won)
+    if (!_gameOver && !_won) {
         movePacman();
+        moveGhosts();
+    }
+    if (_won) {
+        int score = _score;
+        reset();
+        _score = score;
+    }
 }
 
 std::vector<arc::Compo> PacMan::get_element()
@@ -140,17 +186,17 @@ std::vector<arc::Compo> PacMan::get_element()
 
             if (_map[y][x] == 0) {
                 c.sprite = "carre.jpg";
-                c.color  = arc::Color::BLUE;
+                c.color = arc::Color::BLUE;
                 elements.push_back(c);
             }
             else if (_map[y][x] == 1) {
                 c.sprite = ".";
-                c.color  = arc::Color::WHITE;
+                c.color = arc::Color::WHITE;
                 elements.push_back(c);
             }
             else if (_map[y][x] == 2) {
                 c.sprite = "o";
-                c.color  = arc::Color::WHITE;
+                c.color = arc::Color::WHITE;
                 elements.push_back(c);
             }
         }
@@ -161,11 +207,57 @@ std::vector<arc::Compo> PacMan::get_element()
     pacman.sprite = "carre.jpg";
     pacman.color = arc::Color::YELLOW;
     elements.push_back(pacman);
+
+    arc::Color colors[4] = {
+    arc::Color::RED,
+    arc::Color::MAGENTA,
+    arc::Color::CYAN,
+    arc::Color::GREEN
+    };
+    for (int i = 0; i < 4; i++) {
+        arc::Compo ghost;
+        ghost.x = _ghosts[i]._x;
+        ghost.y = _ghosts[i]._y;
+        ghost.sprite = "carre.jpg";
+        ghost.color = colors[i % 4];
+        elements.push_back(ghost);
+    }
+    arc::Compo score;
+    score.x = 0;
+    score.y = 21;
+    score.sprite = "Score: " + std::to_string(_score);
+    score.color = arc::Color::WHITE;
+    elements.push_back(score);
     return elements;
 }
 
 void PacMan::reset()
 {
+    _pacgumsLeft = 0;
+    _score = 0;
+    for (int y = 0; y < 21; y++) {
+        for (int x = 0; x < 21; x++) {
+            _map[y][x] = MAP[y][x];
+            if (_map[y][x] == 1 || _map[y][x] == 2)
+                _pacgumsLeft++;
+        }
+    }
+    _vunerabilityActivated = false;
+    _ghostsOut = false;
+    _gameOver= false;
+    _won = false;
+    _pacmanX = 9;
+    _pacmanY = 13;
+    _pacmanDirX = 0;
+    _pacmanDirY = 0;
+    _pacmanKeyDirX = 0;
+    _pacmanKeyDirY = 0;
+    _ghosts.clear();
+    _ghosts.push_back({8,  9,  1,  0, false, false});
+    _ghosts.push_back({9,  9,  0,  1, false, false});
+    _ghosts.push_back({10, 9, -1,  0, false, false});
+    _ghosts.push_back({9, 10,  0, -1, false, false});
+    _startTime = std::chrono::steady_clock::now();
 }
 
 bool PacMan::get_end()
