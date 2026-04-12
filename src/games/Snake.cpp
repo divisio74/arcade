@@ -75,13 +75,13 @@ void Snake::update(arc::TouchSignal input)
     }
 }
 
-std::vector<arc::Compo> Snake::get_element()
+std::vector<arc::compo> Snake::get_element()
 {
-    std::vector<arc::Compo> element;
+    std::vector<arc::compo> element;
 
     for (int x = 0; x < 21; x++) {
-        arc::Compo c;
-        c.sprite = "carre.jpg";
+        arc::compo c;
+        c.sprite = "#square";
         c.color = arc::Color::BLUE;
         c.x = x;
         c.y = 0; 
@@ -90,8 +90,8 @@ std::vector<arc::Compo> Snake::get_element()
         element.push_back(c);
     }
     for (int y = 0; y < 21; y++) {
-        arc::Compo c;
-        c.sprite = "carre.jpg";
+        arc::compo c;
+        c.sprite = "#square";
         c.color = arc::Color::BLUE;
         c.y = y;
         c.x = 0;
@@ -101,10 +101,10 @@ std::vector<arc::Compo> Snake::get_element()
     }
     for (size_t i = 0; i < _snake.size(); i++)
     {
-        arc::Compo c;
+        arc::compo c;
         c.x = _snake[i].first;
         c.y = _snake[i].second;
-        c.sprite = "carre.jpg";
+        c.sprite = "#square";
         if (i == 0)
             c.color = arc::Color::CYAN;
         else
@@ -112,14 +112,14 @@ std::vector<arc::Compo> Snake::get_element()
         element.push_back(c);
     }
 
-    arc::Compo apple;
+    arc::compo apple;
     apple.x = _apple.first;
     apple.y = _apple.second;
-    apple.sprite = "carre.jpg";
+    apple.sprite = "#square";
     apple.color = arc::Color::RED;
     element.push_back(apple);
 
-    arc::Compo score;
+    arc::compo score;
     score.x = 0;
     score.y = 21;
     score.sprite = "Score: " + std::to_string(_score);

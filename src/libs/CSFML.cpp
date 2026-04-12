@@ -53,7 +53,7 @@ arc::TouchSignal CSFML::signal()
     }
     return input_signal;
 }
-void CSFML::display(std::vector<arc::Compo> elems)
+void CSFML::display(std::vector<arc::compo> elems)
 {
     if (!_window)
         return;
@@ -65,7 +65,7 @@ void CSFML::display(std::vector<arc::Compo> elems)
     }
 
     for (size_t i = 0; i < elems.size(); i++) {
-        arc::Compo c = elems[i];
+        arc::compo c = elems[i];
 
         sf::Color sfColor;
         if (c.color == arc::Color::GREEN)
@@ -83,7 +83,7 @@ void CSFML::display(std::vector<arc::Compo> elems)
         else
             sfColor = sf::Color::White;
 
-        if (c.sprite.empty() || c.sprite == "carre.jpg") {
+        if (c.sprite.empty() || c.sprite == "#square") {
             sf::RectangleShape rect(sf::Vector2f(_cell_size, _cell_size));
             rect.setPosition(c.x * _cell_size, c.y * _cell_size);
             rect.setFillColor(sfColor);

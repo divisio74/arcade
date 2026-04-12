@@ -48,7 +48,7 @@ arc::TouchSignal SDL2::signal()
     return input_signal;
 }
 
-void SDL2::display(std::vector<arc::Compo> elems)
+void SDL2::display(std::vector<arc::compo> elems)
 {
     clear_window();
     if (!_fontLoaded) {
@@ -57,7 +57,7 @@ void SDL2::display(std::vector<arc::Compo> elems)
     }
 
      for (size_t i = 0; i < elems.size(); i++) {
-        arc::Compo c = elems[i];
+        arc::compo c = elems[i];
 
         SDL_Color color;
         if (c.color == arc::Color::GREEN)
@@ -75,7 +75,7 @@ void SDL2::display(std::vector<arc::Compo> elems)
         else
             color = {255, 255, 255, 255};
 
-        if (c.sprite.empty() || c.sprite == "carre.jpg") {
+        if (c.sprite.empty() || c.sprite == "#square") {
             SDL_Rect rect;
             rect.x = c.x * _cell_size;
             rect.y = c.y * _cell_size;

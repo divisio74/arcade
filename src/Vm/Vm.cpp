@@ -3,6 +3,8 @@
 #include <dirent.h>
 #include <thread>
 #include <chrono>
+#include <fstream>
+#include <sstream>
 
 int Vm::handle_lib()
 {
@@ -111,6 +113,32 @@ bool Vm::run_game(IGame *game, IDisplay *&display, Libdl *&display_lib)
     return true;
 }
 
+std::map<std::string, int> Vm::load_scores()
+{
+    std::map<std::string, int> scores;
+    std::ifstream file("scores.txt");
+    std::string line;
+
+    while (std::getline(file, line)) {
+        std::size_t sep = line.find(':');
+        if (sep != std::string::npos)
+            scores[line.substr(0, sep)] = std::stoi(line.substr(sep + 1));
+    }
+    return scores;
+}
+
+void Vm::save_score(const std::string &game_name, int score)
+{
+    std::map<std::string, int> scores = load_scores();
+
+    if (scores.find(game_name) == scores.end() || score > scores[game_name])
+        scores[game_name] = score;
+
+    std::ofstream file("scores.txt");
+    for (auto &pair : scores)
+        file << pair.first << ":" << pair.second << std::endl;
+}
+
 void Vm::main_boucle(std::string &default_display_path)
 {
     Libdl *DefaultLib;
@@ -124,10 +152,15 @@ void Vm::main_boucle(std::string &default_display_path)
     menu = load_menu(MenueLib);
     std::string symGetGame = "GetChosenGame";
     std::string symGetDisp = "GetChosenDisplay";
+    std::string symSetScores = "SetScores";
     getterfunc gGame = MenueLib->DlSymbol<getterfunc>(symGetGame);
     getterfunc gDisp = MenueLib->DlSymbol<getterfunc>(symGetDisp);
+    typedef void (*setscoresfunc)(IGame*, std::map<std::string, int>);
+    setscoresfunc sScores = MenueLib->DlSymbol<setscoresfunc>(symSetScores);
 
     while (true) {
+        if (sScores)
+            sScores(menu, load_scores());
         if (!run_menu(menu, Default))
             break;
 
@@ -144,6 +177,7 @@ void Vm::main_boucle(std::string &default_display_path)
         IDisplay *display = load_display(chosen_display, DisplayLib);
 
         run_game(game, display, DisplayLib);
+        save_score(chosen_game, game->get_score());
         delete game;
         delete display;
         delete GameLib;

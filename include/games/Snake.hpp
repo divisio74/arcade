@@ -10,7 +10,7 @@ class Snake : public AGame
         Snake();
         ~Snake() override = default;
         void update(arc::TouchSignal) override;
-        std::vector<arc::Compo> get_element() override;
+        std::vector<arc::compo> get_element() override;
         void reset() override;
         bool get_end() override;
         int get_score() override;

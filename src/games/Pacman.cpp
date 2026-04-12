@@ -175,17 +175,17 @@ void PacMan::update(arc::TouchSignal signal)
     }
 }
 
-std::vector<arc::Compo> PacMan::get_element()
+std::vector<arc::compo> PacMan::get_element()
 {
-    std::vector<arc::Compo> elements;
+    std::vector<arc::compo> elements;
     for (int y = 0; y < 21; y++) {
         for (int x = 0; x < 21; x++) {
-            arc::Compo c;
+            arc::compo c;
             c.x = x;
             c.y = y;
 
             if (_map[y][x] == 0) {
-                c.sprite = "carre.jpg";
+                c.sprite = "#square";
                 c.color = arc::Color::BLUE;
                 elements.push_back(c);
             }
@@ -201,10 +201,10 @@ std::vector<arc::Compo> PacMan::get_element()
             }
         }
     }
-    arc::Compo pacman;
+    arc::compo pacman;
     pacman.x = _pacmanX;
     pacman.y = _pacmanY;
-    pacman.sprite = "carre.jpg";
+    pacman.sprite = "#square";
     pacman.color = arc::Color::YELLOW;
     elements.push_back(pacman);
 
@@ -215,14 +215,14 @@ std::vector<arc::Compo> PacMan::get_element()
     arc::Color::GREEN
     };
     for (int i = 0; i < 4; i++) {
-        arc::Compo ghost;
+        arc::compo ghost;
         ghost.x = _ghosts[i]._x;
         ghost.y = _ghosts[i]._y;
-        ghost.sprite = "carre.jpg";
+        ghost.sprite = "#square";
         ghost.color = colors[i % 4];
         elements.push_back(ghost);
     }
-    arc::Compo score;
+    arc::compo score;
     score.x = 0;
     score.y = 21;
     score.sprite = "Score: " + std::to_string(_score);

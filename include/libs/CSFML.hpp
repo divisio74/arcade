@@ -11,7 +11,7 @@ class CSFML : public ADisplay
     public:
         CSFML();
         ~CSFML() override = default;
-        void display(std::vector<arc::Compo>) override;
+        void display(std::vector<arc::compo>) override;
         arc::TouchSignal signal() override;
         void open_window() override;
         void close_window() override;

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <map>
 #include "Libdl.hpp"
 #include "IDisplay.hpp"
 #include "IGame.hpp"
@@ -21,6 +22,8 @@ class Vm
         IGame *load_menu(Libdl *&lib);
         bool run_menu(IGame *menu, IDisplay *display);
         bool run_game(IGame *game, IDisplay *&display, Libdl *&lib);
+        void save_score(const std::string &game_name, int score);
+        std::map<std::string, int> load_scores();
 
         std::vector<std::string> _games;
         std::vector<std::string> _displays;

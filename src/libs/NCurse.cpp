@@ -63,13 +63,13 @@ arc::TouchSignal NCurse::signal()
     return sig;
 }
 
-void NCurse::display(std::vector<arc::Compo> elems)
+void NCurse::display(std::vector<arc::compo> elems)
 {
     int offsetX = 2;
     int offsetY = 1;
 
     for (size_t i = 0; i < elems.size(); i++) {
-        arc::Compo c = elems[i];
+        arc::compo c = elems[i];
 
         int color = 1;
         if (c.color == arc::Color::GREEN)
@@ -85,11 +85,8 @@ void NCurse::display(std::vector<arc::Compo> elems)
         else if (c.color == arc::Color::MAGENTA)
             color = 7;
 
-        bool isImage = (c.sprite.find(".jpg") != std::string::npos ||
-                        c.sprite.find(".png") != std::string::npos);
-
         attron(COLOR_PAIR(color));
-        if (isImage)
+        if (c.sprite == "#square")
             mvprintw(c.y + offsetY, c.x * 2 + offsetX, "[]");
         else
             mvprintw(c.y + offsetY, c.x * 2 + offsetX, "%s", c.sprite.c_str());

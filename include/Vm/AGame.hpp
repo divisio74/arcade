@@ -14,11 +14,10 @@ class AGame : public IGame
     public:
         ~AGame() override = default;
         void update(arc::TouchSignal) override = 0;
-        std::vector<arc::Compo> get_element() override = 0;
+        std::vector<arc::compo> get_element() override = 0;
         void reset() override = 0;
         bool get_end() override = 0;
         int get_score() override = 0;
-        
 
 
 };
