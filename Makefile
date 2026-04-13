@@ -14,7 +14,7 @@ OBJ         = $(SRC:.cpp=.o)
 LIB_DIR     = lib
 
 GRAPHICALS  = $(LIB_DIR)/arcade_ncurses.so \
-              $(LIB_DIR)/arcade_csfml.so \
+              $(LIB_DIR)/arcade_sfml.so \
 			  $(LIB_DIR)/arcade_sdl2.so
 
 GAMES       = $(LIB_DIR)/arcade_menue.so \
@@ -52,7 +52,7 @@ $(LIB_DIR)/arcade_ncurses.so: src/libs/NCurse.cpp
 	mkdir -p $(LIB_DIR)
 	$(CXX) $(CXXFLAGSLIB) -o $@ $< -lncurses
 
-$(LIB_DIR)/arcade_csfml.so: src/libs/CSFML.cpp
+$(LIB_DIR)/arcade_sfml.so: src/libs/SFML.cpp
 	mkdir -p $(LIB_DIR)
 	$(CXX) $(CXXFLAGSLIB) -o $@ $< -lsfml-graphics -lsfml-window -lsfml-system
 
